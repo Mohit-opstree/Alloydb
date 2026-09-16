@@ -9,8 +9,7 @@ Exactly what is being implemented:
 
 * **AlloyDB PostgreSQL 14 → PostgreSQL 18**
 * **In-place major version upgrade**
-* **Existing production cluster is upgraded; new production cluster is not created**
-* **Same production cluster remains the target**
+
 
 ---
 

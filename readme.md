@@ -103,52 +103,9 @@ ORDER BY extname;
 
 ---
 
-### 3.4 Orphaned Role Memberships
-```sql
-SELECT roleid::regrole,
-       member::regrole,
-       grantor::regrole
-FROM pg_auth_members
-WHERE grantor::regrole::text ~ '^[0-9]+$';
-```
-* **Acceptable:** `0` rows returned.
-* **Blocker:** Any rows returned with raw numeric OIDs representing non-existent grantors (must be cleaned up prior to upgrade).
 
----
 
-### 3.5 Database Connectivity
-```sql
-SELECT datname, datallowconn 
-FROM pg_database 
-ORDER BY datname;
-```
-* **Acceptable:** `datallowconn` is `true` for all production workload databases.
-* **Blocker:** User databases with `datallowconn = false` that require access during catalog migration.
-
----
-
-### 3.6 Template Database State (`template1`)
-```sql
-SELECT datname, datistemplate 
-FROM pg_database 
-WHERE datname = 'template1';
-```
-* **Acceptable:** `datname = 'template1'` with `datistemplate = true`.
-* **Blocker:** `template1` altered to `datistemplate = false` or custom user objects existing directly in `template1`.
-
----
-
-### 3.7 Large Object Metadata (`pg_largeobject_metadata`)
-```sql
-SELECT count(*) 
-FROM pg_largeobject_metadata;
-```
-* **Acceptable:** Returns integer count.
-* **Blocker:** Unreadable or corrupted metadata table entries.
-
----
-
-### 3.8 Logical Replication & Cross-Region Replication
+### 3.4 Replication Configuration  (IF APPLICABLE )
 * **Logical Replication:** Verify replication slots and active subscriptions:
   ```sql
   SELECT slot_name, plugin, active FROM pg_replication_slots;

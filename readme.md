@@ -214,7 +214,7 @@ SHOW server_version;
 * **Application logs checked:** Zero fatal or syntax error logs related to deprecated PostgreSQL features or driver incompatibilities.
 * **Monitoring checked:** CPU, memory, and disk metrics stabilize at normal operating baseline.
 
-> **Only after this validation is successful should production upgrade proceed.**
+> **"Application is successfully connected to the upgraded PostgreSQL 18 clone, required data is accessible, and critical application workflows are working as expected."Then Only after this validation is successful should production upgrade proceed.**
 
 ---
 

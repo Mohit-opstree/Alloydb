@@ -118,6 +118,39 @@ ORDER BY extname;
 
 ---
 
+
+### 3.5 Database Connectivity
+```sql
+SELECT datname, datallowconn 
+FROM pg_database 
+ORDER BY datname;
+```
+* **Acceptable:** `datallowconn` is `true` for all production workload databases.
+* **Blocker:** User databases with `datallowconn = false` that require access during catalog migration.
+
+---
+
+### 3.6 Template Database State (`template1`)
+```sql
+SELECT datname, datistemplate 
+FROM pg_database 
+WHERE datname = 'template1';
+```
+* **Acceptable:** `datname = 'template1'` with `datistemplate = true`.
+* **Blocker:** `template1` altered to `datistemplate = false` or custom user objects existing directly in `template1`.
+
+---
+
+### 3.7 Large Object Metadata (`pg_largeobject_metadata`)
+```sql
+SELECT count(*) 
+FROM pg_largeobject_metadata;
+```
+* **Acceptable:** Returns integer count.
+* **Blocker:** Unreadable or corrupted metadata table entries. / A non-zero count is returned. 
+
+---
+
 ## 4. Phase 2 — Create PITR Validation Clone
 
 ### Exact Command to Restore Clone:
@@ -342,8 +375,13 @@ gcloud alloydb instances list \
 
 ## 11. Recovery / Rollback
 
-### Technical Reality
-**PostgreSQL 18 cannot simply be downgraded in-place back to PostgreSQL 14.**
+### Automatic Rollback Boundary
+
+If the upgrade fails before the primary instance is upgraded, AlloyDB automatically rolls back the upgrade and the production cluster remains on PostgreSQL 14.
+
+Once the primary instance has been successfully upgraded to PostgreSQL 18, AlloyDB does not automatically roll back the cluster to PostgreSQL 14.
+
+If the upgraded PostgreSQL 18 environment must be reverted, restore the pre-upgrade backup into a **new AlloyDB cluster** containing the previous PostgreSQL 14 state and perform application cutover to that recovered cluster.
 
 If recovery is required, follow this procedure:
 

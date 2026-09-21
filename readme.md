@@ -142,12 +142,17 @@ WHERE datname = 'template1';
 ---
 
 ### 3.7 Large Object Metadata (`pg_largeobject_metadata`)
+
+Check whether the cluster contains entries in the `pg_largeobject_metadata` system catalog:
+
 ```sql
-SELECT count(*) 
+SELECT count(*)
 FROM pg_largeobject_metadata;
 ```
-* **Acceptable:** Returns integer count.
-* **Blocker:** Unreadable or corrupted metadata table entries. / A non-zero count is returned. 
+* **Acceptable:** The query returns 0
+* **Blocker:** A non-zero count is returned.
+
+AlloyDB does not support in-place major version upgrades for clusters that use pg_largeobject_metadata. If the query returns a non-zero value, stop the upgrade and remediate the affected objects before proceeding.
 
 ---
 

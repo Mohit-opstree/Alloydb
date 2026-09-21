@@ -341,10 +341,10 @@ gcloud alloydb operations describe "<OPERATION_ID>" \
 * **SUCCESS:**
   * **Meaning:** The upgrade completed cleanly across the primary instance and read pools.
   * **Action:** Proceed immediately to Phase 8 Post-Upgrade Validation.
-
+    
 * **FAILED:**
-  * **Meaning:** Pre-upgrade validation checks or core engine upgrade failed.
-  * **Action:** AlloyDB rolls back to PostgreSQL 14. Inspect error details in the operation description and Cloud Logging. Keep production on PG14 while resolving blockers.
+  * **Meaning:** The upgrade operation failed.
+  * **Action:** If the failure occurs before the primary instance is upgraded, AlloyDB automatically rolls back the upgrade and the production cluster remains on PostgreSQL 14.     Inspect the operation details and `postgres_upgrade` logs, resolve the identified issue, and repeat the upgrade when ready.
 
 * **PARTIAL_SUCCESS:**
   * **Meaning:** Primary instance upgraded successfully to PostgreSQL 18, but one or more read pools encountered errors during upgrade.
